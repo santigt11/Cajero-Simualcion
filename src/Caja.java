@@ -5,9 +5,11 @@ public class Caja {
     private ArrayList<Persona> cola;
     private Integer tiempoEscanItem;
     private Integer tiempoTotal = 0;
+    private String cajero;
 
     public Caja(String cajero) {
         this.cola = new ArrayList<Persona>();
+        this.cajero = cajero;
         if (cajero == "experto") {
             this.tiempoEscanItem = 5;
         } else if (cajero == "novato") {
@@ -26,6 +28,7 @@ public class Caja {
 
 
     public void llenarCola(int personas) {
+        getCola().removeAll(cola);
         Random rand = new Random();
         for (int i = 0; i < personas; i++) {
             int nRand = rand.nextInt(1, 50);
@@ -57,5 +60,13 @@ public class Caja {
 
     public void setTiempoTotal(int tiempoTotal) {
         this.tiempoTotal = tiempoTotal;
+    }
+
+    public String getCajero() {
+        return cajero;
+    }
+
+    public void setCajero(String cajero) {
+        this.cajero = cajero;
     }
 }
