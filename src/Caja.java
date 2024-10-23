@@ -3,12 +3,11 @@ import java.util.Random;
 
 public class Caja {
     private ArrayList<Persona> cola;
-    private int tiempoEscanItem;
-    private String cajero;
+    private Integer tiempoEscanItem;
+    private Integer tiempoTotal = 0;
 
     public Caja(String cajero) {
         this.cola = new ArrayList<Persona>();
-        this.cajero = cajero;
         if (cajero == "experto") {
             this.tiempoEscanItem = 5;
         } else if (cajero == "novato") {
@@ -19,7 +18,6 @@ public class Caja {
     }
 
     public int calcularTiempoTotal() {
-        int tiempoTotal = 0;
         for (Persona p : cola) {
             tiempoTotal += (p.getNumArticulos() * tiempoEscanItem) + p.getTiempCobro();
         }
@@ -51,5 +49,13 @@ public class Caja {
 
     public void setTiempoEscanItem(int tiempoEscanItem) {
         this.tiempoEscanItem = tiempoEscanItem;
+    }
+
+    public int getTiempoTotal() {
+        return tiempoTotal;
+    }
+
+    public void setTiempoTotal(int tiempoTotal) {
+        this.tiempoTotal = tiempoTotal;
     }
 }

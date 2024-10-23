@@ -1,8 +1,8 @@
 import java.util.Random;
 
 public class Persona {
-    int numArticulos;
-    int tiempCobro;
+    Integer numArticulos;
+    Integer tiempCobro;
 
     public Persona(int numArticulos) {
         this.numArticulos = numArticulos;
