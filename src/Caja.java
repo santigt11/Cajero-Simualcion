@@ -1,32 +1,35 @@
 import java.util.ArrayList;
 
 public class Caja {
-    ArrayList<Persona> fila = new ArrayList<>();
-    int tiempoEscaneoPorArticulo;
+    ArrayList<Persona> cola;
+    int tiempoEscanItem;
 
-    public Caja(int tiempoEscaneoPorArticulo) {
-        this.tiempoEscaneoPorArticulo = tiempoEscaneoPorArticulo;
-    }
-
-    public void agregarPersona(Persona p) {
-        fila.add(p);
+    public Caja (int tiempoEscanItem) {
+        this.cola = new ArrayList<Persona>();
+        this.tiempoEscanItem = tiempoEscanItem;
     }
 
     public int calcularTiempoTotal() {
         int tiempoTotal = 0;
-        for (Persona p : fila) {
-            tiempoTotal += p.calcularTiempoAtencion(tiempoEscaneoPorArticulo);
+        for (Persona p : cola) {
+            tiempoTotal += p.getNumArticulos() * tiempoEscanItem;
         }
         return tiempoTotal;
     }
 
-    public int getNumPersonas() {
-        return fila.size();
+    public ArrayList<Persona> getCola() {
+        return cola;
     }
 
-    public void atenderCliente() {
-        if (!fila.isEmpty()) {
-            fila.remove(0);
-        }
+    public void setCola(ArrayList<Persona> cola) {
+        this.cola = cola;
+    }
+
+    public int getTiempoEscanItem() {
+        return tiempoEscanItem;
+    }
+
+    public void setTiempoEscanItem(int tiempoEscanItem) {
+        this.tiempoEscanItem = tiempoEscanItem;
     }
 }
