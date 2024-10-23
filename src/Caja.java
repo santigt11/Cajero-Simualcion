@@ -4,10 +4,18 @@ import java.util.Random;
 public class Caja {
     private ArrayList<Persona> cola;
     private int tiempoEscanItem;
+    private String cajero;
 
-    public Caja(int tiempoEscanItem) {
+    public Caja(String cajero) {
         this.cola = new ArrayList<Persona>();
-        this.tiempoEscanItem = tiempoEscanItem;
+        this.cajero = cajero;
+        if(cajero == "experto"){
+            this.tiempoEscanItem = 5;
+        } else if (cajero == "novato"){
+            this.tiempoEscanItem = 10;
+        } else {
+            this.tiempoEscanItem = 7;
+        }
     }
 
     public int calcularTiempoTotal() {
