@@ -5,17 +5,21 @@ public class Caja {
     private ArrayList<Persona> cola;
     private Integer tiempoEscanItem;
     private Integer tiempoTotal = 0;
-    private String cajero;
+    private String tipo;
 
-    public Caja(String cajero) {
+    public Caja(String tipo) {
         this.cola = new ArrayList<Persona>();
-        this.cajero = cajero;
-        if (cajero == "experto") {
-            this.tiempoEscanItem = 5;
-        } else if (cajero == "novato") {
-            this.tiempoEscanItem = 10;
-        } else {
-            this.tiempoEscanItem = 7;
+        this.tipo = tipo;
+        switch (tipo) {
+            case "experto":
+                this.tiempoEscanItem = 5;
+                break;
+            case "novato":
+                this.tiempoEscanItem = 10;
+                break;
+            default:
+                this.tiempoEscanItem = 7;
+                break;
         }
     }
 
@@ -27,12 +31,11 @@ public class Caja {
     }
 
 
-    public void llenarCola(int personas) {
+    public void llenarCola(int personas, String tipo) {
         getCola().removeAll(cola);
         Random rand = new Random();
         for (int i = 0; i < personas; i++) {
-            int nRand = rand.nextInt(1, 50);
-            getCola().add(new Persona(nRand));
+            getCola().add(new Persona(tipo));
         }
     }
 
@@ -62,11 +65,11 @@ public class Caja {
         this.tiempoTotal = tiempoTotal;
     }
 
-    public String getCajero() {
-        return cajero;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setCajero(String cajero) {
-        this.cajero = cajero;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
