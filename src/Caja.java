@@ -9,9 +9,9 @@ public class Caja {
     public Caja(String cajero) {
         this.cola = new ArrayList<Persona>();
         this.cajero = cajero;
-        if(cajero == "experto"){
+        if (cajero == "experto") {
             this.tiempoEscanItem = 5;
-        } else if (cajero == "novato"){
+        } else if (cajero == "novato") {
             this.tiempoEscanItem = 10;
         } else {
             this.tiempoEscanItem = 7;
@@ -21,9 +21,18 @@ public class Caja {
     public int calcularTiempoTotal() {
         int tiempoTotal = 0;
         for (Persona p : cola) {
-            tiempoTotal += p.getNumArticulos() * tiempoEscanItem;
+            tiempoTotal += (p.getNumArticulos() * tiempoEscanItem) + p.getTiempCobro();
         }
         return tiempoTotal;
+    }
+
+
+    public void llenarCola(int personas) {
+        Random rand = new Random();
+        for (int i = 0; i < personas; i++) {
+            int nRand = rand.nextInt(1, 50);
+            getCola().add(new Persona(nRand));
+        }
     }
 
     public ArrayList<Persona> getCola() {
@@ -42,13 +51,5 @@ public class Caja {
 
     public void setTiempoEscanItem(int tiempoEscanItem) {
         this.tiempoEscanItem = tiempoEscanItem;
-    }
-
-    public void llenarCola(int personas) {
-        Random rand = new Random();
-        for (int i = 0; i < personas; i++) {
-            int nRand = rand.nextInt(1, 50);
-            getCola().add(new Persona(nRand));
-        }
     }
 }
