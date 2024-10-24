@@ -41,5 +41,9 @@ public class Main {
         } else {
             System.out.println("Caja Express | " + menorTiempo + " segundos");
         }
+        
+        // Crear y mostrar la animación pasando las cajas
+        AnimacionCajas animacion = new AnimacionCajas(caja1, caja2, caja3, caja4);
+        animacion.setVisible(true);
     }
 }

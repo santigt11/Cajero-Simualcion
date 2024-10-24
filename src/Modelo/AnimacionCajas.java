@@ -12,12 +12,21 @@ public class AnimacionCajas extends JFrame {
 
     private JPanel panelPrincipal;
     private JPanel panelCaja1, panelCaja2, panelCaja3, panelCaja4;
-    private Caja caja1, caja2, caja3, caja4;
+    private static Caja caja1, caja2, caja3, caja4;
 
     // Directorio de imágenes
     private String directorioImagenes = ".\\imagenes";
 
-    public AnimacionCajas() {
+    public AnimacionCajas() throws HeadlessException {
+    }
+    
+    // Constructor que recibe las cajas
+    public AnimacionCajas(Caja caja1, Caja caja2, Caja caja3, Caja caja4) {
+        this.caja1 = caja1;
+        this.caja2 = caja2;
+        this.caja3 = caja3;
+        this.caja4 = caja4;
+
         setTitle("Animación de Cajas");
         setSize(1000, 600); // Ajusta el tamaño de la ventana según sea necesario
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -26,23 +35,11 @@ public class AnimacionCajas extends JFrame {
         panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new GridLayout(1, 4, 10, 10)); // 4 columnas para las 4 cajas, con separación
 
-        // Inicializar las cajas
-        caja1 = new Caja("experto");
-        caja2 = new Caja("principiante");
-        caja3 = new Caja("regular");
-        caja4 = new Caja("express");
-
         // Inicializar los paneles de cada caja con sus imágenes y nombres
         panelCaja1 = crearPanelCaja("cajero.png", "Caja Experto");
         panelCaja2 = crearPanelCaja("cajero.png", "Caja Principiante");
         panelCaja3 = crearPanelCaja("cajero.png", "Caja Regular");
         panelCaja4 = crearPanelCaja("cajero.png", "Caja Express");
-
-        // Llenar las colas con clientes
-        caja1.llenarCola(5, "normal");
-        caja2.llenarCola(5, "normal");
-        caja3.llenarCola(5, "normal");
-        caja4.llenarCola(10, "express");
 
         // Llenar las colas visuales
         llenarColaVisual(panelCaja1, caja1.getCola(), "cliente.png");
@@ -120,7 +117,7 @@ public class AnimacionCajas extends JFrame {
             while (!cola.isEmpty()) {
                 Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
                 int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 1000); // Convertir el tiempo a milisegundos
+                Thread.sleep(tiempoProcesamiento * 10); // Convertir el tiempo a milisegundos
 
                 if (panelClientes.getComponentCount() > 0) {
                     panelClientes.remove(0); // Eliminar visualmente el primer cliente
@@ -135,7 +132,7 @@ public class AnimacionCajas extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            AnimacionCajas frame = new AnimacionCajas();
+            AnimacionCajas frame = new AnimacionCajas(caja1, caja2, caja3, caja4);
             frame.setVisible(true);
         });
     }
