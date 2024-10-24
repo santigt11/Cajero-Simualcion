@@ -5,6 +5,9 @@
 package Vista;
 
 import Modelo.Caja;
+import Modelo.Cliente;
+import java.util.ArrayList;
+import javax.swing.JPanel;
 
 /**
  *
@@ -14,54 +17,23 @@ public class Simulacion extends javax.swing.JFrame {
 
     public Simulacion() {
         initComponents();
-        simulacion();
     }
 
-    public void simulacion() {
-        StringBuilder s = new StringBuilder("");
-
-        // Caja Experto
-        Caja caja1 = new Caja("experto");
-        caja1.llenarCola(5, "normal");
-        int tiempoCaja1 = caja1.calcularTiempoTotal();
-        s.append("======== Caja #1 (Experto) =======\n");
-        s.append(tiempoCaja1 + " segundos.\n");
-
-        // Caja Novato
-        Caja caja2 = new Caja("principiante");
-        caja2.llenarCola(5, "normal");
-        int tiempoCaja2 = caja2.calcularTiempoTotal();
-        s.append("======== Caja #2 (Principiante) =======\n");
-        s.append(tiempoCaja2 + " segundos.\n");
-
-        // Caja Regular
-        Caja caja3 = new Caja("regular");
-        caja3.llenarCola(5, "normal");
-        int tiempoCaja3 = caja3.calcularTiempoTotal();
-        s.append("======== Caja #3 (Regular) =======\n");
-        s.append(tiempoCaja3 + " segundos.\n");
-
-        // Caja Express
-        Caja caja4 = new Caja("express");
-        caja4.llenarCola(10, "express");
-        int tiempoCaja4 = caja4.calcularTiempoTotal();
-        s.append("======== Caja Express =======\n");
-        s.append(tiempoCaja4 + " segundos.\n");
-
-        // Caja con el menor tiempo
-        int menorTiempo = Math.min(tiempoCaja1, Math.min(tiempoCaja2, Math.min(tiempoCaja3, tiempoCaja4)));
-        s.append("\n======== Caja con el menor tiempo =======\n");
-        if (menorTiempo == tiempoCaja1) {
-            s.append("Caja #1 (Experto) | " + menorTiempo + " segundos");
-        } else if (menorTiempo == tiempoCaja2) {
-            s.append("Caja #2 (Principiante) | " + menorTiempo + " segundos");
-        } else if (menorTiempo == tiempoCaja3) {
-            s.append("Caja #3 (Regular) | " + menorTiempo + " segundos");
-        } else {
-            s.append("Caja Express | " + menorTiempo + " segundos");
+    // Método para simular el procesamiento de la cola
+    private void procesarCola(JPanel panel, Caja caja) {
+        ArrayList<Cliente> cola = caja.getCola();
+        try {
+            while (!cola.isEmpty()) {
+                Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
+                int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
+                Thread.sleep(tiempoProcesamiento * 10); // Convertir el tiempo a milisegundos
+                panel.remove(0); // Eliminar visualmente el primer cliente
+                panel.revalidate();
+                panel.repaint();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        
-        txtSimulacion.setText(s.toString());
     }
 
     @SuppressWarnings("unchecked")
