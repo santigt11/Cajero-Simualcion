@@ -24,6 +24,10 @@ public class Caja {
                 break;
         }
     }
+    
+    public Caja (Integer tiempoEscanItem){
+        this.tiempoEscanItem = tiempoEscanItem;
+    }
 
     public int calcularTiempoTotal() {
         for (Cliente p : cola) {
