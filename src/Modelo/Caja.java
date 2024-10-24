@@ -1,20 +1,22 @@
+package Modelo;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Caja {
-    private ArrayList<Persona> cola;
+    private ArrayList<Cliente> cola;
     private Integer tiempoEscanItem;
     private Integer tiempoTotal = 0;
     private String tipo;
 
     public Caja(String tipo) {
-        this.cola = new ArrayList<Persona>();
+        this.cola = new ArrayList<Cliente>();
         this.tipo = tipo;
         switch (tipo) {
             case "experto":
                 this.tiempoEscanItem = 5;
                 break;
-            case "novato":
+            case "principiante":
                 this.tiempoEscanItem = 10;
                 break;
             default:
@@ -24,28 +26,28 @@ public class Caja {
     }
 
     public int calcularTiempoTotal() {
-        for (Persona p : cola) {
-            tiempoTotal += (p.getNumArticulos() * tiempoEscanItem) + p.getTiempCobro();
+        for (Cliente p : cola) {
+            tiempoTotal += (p.getNumArticulos() * tiempoEscanItem) + p.getTiempoPago();
         }
         return tiempoTotal;
     }
 
 
-    public void llenarCola(int personas, String tipo) {
+    public void llenarCola(int clientes, String tipo) {
         getCola().removeAll(cola);
         Random rand = new Random();
-        for (int i = 0; i < personas; i++) {
-            getCola().add(new Persona(tipo));
+        for (int i = 0; i < clientes; i++) {
+            getCola().add(new Cliente(tipo));
         }
     }
 
-    public ArrayList<Persona> getCola() {
+    public ArrayList<Cliente> getCola() {
         if (cola == null)
-            cola = new ArrayList<Persona>();
+            cola = new ArrayList<Cliente>();
         return cola;
     }
 
-    public void setCola(ArrayList<Persona> cola) {
+    public void setCola(ArrayList<Cliente> cola) {
         this.cola = cola;
     }
 

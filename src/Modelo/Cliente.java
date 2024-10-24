@@ -1,11 +1,13 @@
+package Modelo;
+
 import java.util.Random;
 
-public class Persona {
+public class Cliente {
     private Integer numArticulos;
-    private Integer tiempCobro;
+    private Integer tiempoPago;
 
-    public Persona(String tipo) {
-        if (tipo == "normal"){
+    public Cliente(String tipo) {
+        if ("normal".equals(tipo)){
             Random rand = new Random();
             this.numArticulos = rand.nextInt(1, 50);
         } else {
@@ -13,7 +15,7 @@ public class Persona {
             this.numArticulos = rand.nextInt(1, 10);
         }
         Random rand = new Random();
-        this.tiempCobro = rand.nextInt(10, 250);
+        this.tiempoPago = rand.nextInt(10, 360);
     }
 
     public int getNumArticulos() {
@@ -24,11 +26,11 @@ public class Persona {
         this.numArticulos = numArticulos;
     }
 
-    public int getTiempCobro() {
-        return tiempCobro;
+    public int getTiempoPago() {
+        return tiempoPago;
     }
 
-    public void setTiempCobro(int tiempCobro) {
-        this.tiempCobro = tiempCobro;
+    public void setTiempoPago(int tiempoPago) {
+        this.tiempoPago = tiempoPago;
     }
 }
