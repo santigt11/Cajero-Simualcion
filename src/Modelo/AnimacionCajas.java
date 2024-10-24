@@ -1,6 +1,8 @@
+
 package Modelo;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import Modelo.Cliente;
@@ -69,7 +71,7 @@ public class AnimacionCajas extends JFrame {
         new Thread(() -> procesarCola(panelCaja4, caja4)).start();
     }
 
-    // Método para crear un panel de caja con su imagen y nombre
+    // Método para crear un panel de caja con su imagen, nombre, y un borde para el carril
     private JPanel crearPanelCaja(String imagenCaja, String nombreCaja) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -80,6 +82,9 @@ public class AnimacionCajas extends JFrame {
         labelCaja.setVerticalTextPosition(JLabel.BOTTOM);
         labelCaja.setHorizontalTextPosition(JLabel.CENTER);
 
+        // Añadir borde para hacer que el carril sea más visible
+        panel.setBorder(new LineBorder(Color.BLACK, 3));
+
         panel.add(labelCaja, BorderLayout.NORTH);
         return panel;
     }
@@ -87,7 +92,7 @@ public class AnimacionCajas extends JFrame {
     // Método para llenar las colas visuales con los clientes de la lista de la caja
     private void llenarColaVisual(JPanel panel, ArrayList<Cliente> cola, String imagenCliente) {
         JPanel panelClientes = new JPanel();  // Panel que contendrá los clientes
-        panelClientes.setLayout(new BoxLayout(panelClientes, BoxLayout.Y_AXIS));
+        panelClientes.setLayout(new BoxLayout(panelClientes, BoxLayout.Y_AXIS)); // Distribución vertical para los clientes
 
         for (Cliente cliente : cola) {
             // Cargar la imagen del cliente
@@ -106,9 +111,7 @@ public class AnimacionCajas extends JFrame {
     }
 
     // Método para simular el procesamiento de la cola
-    // Método para simular el procesamiento de la cola
     private void procesarCola(JPanel panel, Caja caja) {
-        // Obtenemos el panel que contiene los clientes
         Component[] componentes = panel.getComponents();
         JPanel panelClientes = (JPanel) componentes[1]; // Asumimos que el segundo componente es el panel de clientes
 
@@ -117,7 +120,7 @@ public class AnimacionCajas extends JFrame {
             while (!cola.isEmpty()) {
                 Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
                 int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 10); // Convertir el tiempo a milisegundos
+                Thread.sleep(tiempoProcesamiento * 1000); // Convertir el tiempo a milisegundos
 
                 if (panelClientes.getComponentCount() > 0) {
                     panelClientes.remove(0); // Eliminar visualmente el primer cliente
