@@ -8,17 +8,21 @@ import Modelo.Caja;
 
 public class AnimacionCajas extends JFrame {
 
+    private JPanel panelPrincipal;
     private JPanel panelCaja1, panelCaja2, panelCaja3, panelCaja4;
     private Caja caja1, caja2, caja3, caja4;
 
     // Directorio de imágenes
-    private String directorioImagenes = "C:\\Users\\santi.LENOVO\\Desktop\\Universidad\\Quinto Ciclo\\Simulacion\\Cajeros-Simulacion\\Cajero-Simualcion\\imagenes\\";
+    private String directorioImagenes = ".\\imagenes";
 
     public AnimacionCajas() {
         setTitle("Animación de Cajas");
-        setSize(600, 400);
+        setSize(1000, 600); // Ajusta el tamaño de la ventana según sea necesario
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new GridLayout(1, 4)); // 4 columnas para las 4 cajas
+
+        // Crear el panel principal que contendrá todas las cajas
+        panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new GridLayout(1, 4, 10, 10)); // 4 columnas para las 4 cajas, con separación
 
         // Inicializar las cajas
         caja1 = new Caja("experto");
@@ -32,12 +36,6 @@ public class AnimacionCajas extends JFrame {
         panelCaja3 = crearPanelCaja("cajero.png", "Caja Regular");
         panelCaja4 = crearPanelCaja("cajero.png", "Caja Express");
 
-        // Añadir los paneles al frame
-        add(panelCaja1);
-        add(panelCaja2);
-        add(panelCaja3);
-        add(panelCaja4);
-
         // Llenar las colas con clientes
         caja1.llenarCola(5, "normal");
         caja2.llenarCola(5, "normal");
@@ -50,6 +48,20 @@ public class AnimacionCajas extends JFrame {
         llenarColaVisual(panelCaja3, caja3.getCola(), "cliente.png");
         llenarColaVisual(panelCaja4, caja4.getCola(), "cliente.png");
 
+        // Añadir los paneles de caja al panel principal
+        panelPrincipal.add(panelCaja1);
+        panelPrincipal.add(panelCaja2);
+        panelPrincipal.add(panelCaja3);
+        panelPrincipal.add(panelCaja4);
+
+        // Crear un JScrollPane que contenga el panel principal
+        JScrollPane scrollPane = new JScrollPane(panelPrincipal);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        // Añadir el JScrollPane al frame
+        add(scrollPane);
+
         // Simular el procesamiento de las colas
         new Thread(() -> procesarCola(panelCaja1, caja1)).start();
         new Thread(() -> procesarCola(panelCaja2, caja2)).start();
@@ -61,41 +73,57 @@ public class AnimacionCajas extends JFrame {
     private JPanel crearPanelCaja(String imagenCaja, String nombreCaja) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        
+
         // Cargar la imagen de la caja
-        ImageIcon iconoCaja = new ImageIcon(directorioImagenes + imagenCaja);
+        ImageIcon iconoCaja = new ImageIcon(directorioImagenes + "/" + imagenCaja);
         JLabel labelCaja = new JLabel(nombreCaja, iconoCaja, JLabel.CENTER);
         labelCaja.setVerticalTextPosition(JLabel.BOTTOM);
         labelCaja.setHorizontalTextPosition(JLabel.CENTER);
-        
-        panel.add(labelCaja, BorderLayout.CENTER);
+
+        panel.add(labelCaja, BorderLayout.NORTH);
         return panel;
     }
 
     // Método para llenar las colas visuales con los clientes de la lista de la caja
     private void llenarColaVisual(JPanel panel, ArrayList<Cliente> cola, String imagenCliente) {
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JPanel panelClientes = new JPanel();  // Panel que contendrá los clientes
+        panelClientes.setLayout(new BoxLayout(panelClientes, BoxLayout.Y_AXIS));
+
         for (Cliente cliente : cola) {
             // Cargar la imagen del cliente
-            ImageIcon iconoCliente = new ImageIcon(directorioImagenes + imagenCliente);
+            ImageIcon iconoCliente = new ImageIcon(directorioImagenes + "/" + imagenCliente);
             JLabel clienteLabel = new JLabel("Artículos: " + cliente.getNumArticulos(), iconoCliente, JLabel.LEFT);
             clienteLabel.setVerticalTextPosition(JLabel.BOTTOM);
             clienteLabel.setHorizontalTextPosition(JLabel.CENTER);
-            panel.add(clienteLabel);
+            panelClientes.add(clienteLabel);
         }
+
+        // Añadir el panel de clientes al panel principal de la caja
+        panel.add(panelClientes, BorderLayout.CENTER);
+
+        // Establecer el tamaño preferido para que funcione correctamente con JScrollPane
+        panelClientes.setPreferredSize(new Dimension(150, cola.size() * 100)); // Ajusta según el tamaño necesario
     }
 
     // Método para simular el procesamiento de la cola
+    // Método para simular el procesamiento de la cola
     private void procesarCola(JPanel panel, Caja caja) {
+        // Obtenemos el panel que contiene los clientes
+        Component[] componentes = panel.getComponents();
+        JPanel panelClientes = (JPanel) componentes[1]; // Asumimos que el segundo componente es el panel de clientes
+
         ArrayList<Cliente> cola = caja.getCola();
         try {
             while (!cola.isEmpty()) {
                 Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
                 int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 1000); // Convertir el tiempo a milisegundos
-                panel.remove(0); // Eliminar visualmente el primer cliente
-                panel.revalidate();
-                panel.repaint();
+                Thread.sleep(tiempoProcesamiento * 10); // Convertir el tiempo a milisegundos
+
+                if (panelClientes.getComponentCount() > 0) {
+                    panelClientes.remove(0); // Eliminar visualmente el primer cliente
+                    panelClientes.revalidate();
+                    panelClientes.repaint();
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
