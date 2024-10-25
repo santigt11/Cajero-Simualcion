@@ -1,5 +1,5 @@
 
-package Modelo;
+package Vista;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -7,6 +7,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import Modelo.Cliente;
 import Modelo.Caja;
+import Modelo.Caja;
+import Modelo.Cliente;
+import java.util.Random;
 
 public class AnimacionCajas extends JFrame {
 
@@ -39,13 +42,13 @@ public class AnimacionCajas extends JFrame {
         panelCaja1 = crearPanelCaja("cajero.png", "Caja Experto");
         panelCaja2 = crearPanelCaja("cajero.png", "Caja Principiante");
         panelCaja3 = crearPanelCaja("cajero.png", "Caja Regular");
-        panelCaja4 = crearPanelCaja("cajero.png", "Caja Express");
+        panelCaja4 = crearPanelCaja("cajeroExpress.png", "Caja Express");
 
         // Llenar las colas visuales
-        llenarColaVisual(panelCaja1, caja1.getCola(), "cliente.png");
-        llenarColaVisual(panelCaja2, caja2.getCola(), "cliente.png");
-        llenarColaVisual(panelCaja3, caja3.getCola(), "cliente.png");
-        llenarColaVisual(panelCaja4, caja4.getCola(), "cliente.png");
+        llenarColaVisual(panelCaja1, caja1.getCola(), "cliente");
+        llenarColaVisual(panelCaja2, caja2.getCola(), "cliente");
+        llenarColaVisual(panelCaja3, caja3.getCola(), "cliente");
+        llenarColaVisual(panelCaja4, caja4.getCola(), "cliente");
 
         // Añadir los paneles de caja al panel principal
         panelPrincipal.add(panelCaja1);
@@ -74,7 +77,7 @@ public class AnimacionCajas extends JFrame {
         panel.setLayout(new BorderLayout());
 
         // Cargar la imagen de la caja
-        ImageIcon iconoCaja = new ImageIcon(directorioImagenes + "/" + imagenCaja);
+        ImageIcon iconoCaja = new ImageIcon(directorioImagenes + "\\" + imagenCaja);
         JLabel labelCaja = new JLabel(nombreCaja, iconoCaja, JLabel.CENTER);
         labelCaja.setVerticalTextPosition(JLabel.BOTTOM);
         labelCaja.setHorizontalTextPosition(JLabel.CENTER);
@@ -90,10 +93,15 @@ public class AnimacionCajas extends JFrame {
     private void llenarColaVisual(JPanel panel, ArrayList<Cliente> cola, String imagenCliente) {
         JPanel panelClientes = new JPanel();  // Panel que contendrá los clientes
         panelClientes.setLayout(new BoxLayout(panelClientes, BoxLayout.Y_AXIS)); // Distribución vertical para los clientes
-
+        Random rand = new Random();
         for (Cliente cliente : cola) {
-            // Cargar la imagen del cliente
-            ImageIcon iconoCliente = new ImageIcon(directorioImagenes + "/" + imagenCliente);
+            int clienteTipo = rand.nextInt(1, 6);
+            ImageIcon iconoCliente;
+            if (clienteTipo == 1) {
+                iconoCliente = new ImageIcon(directorioImagenes + "\\" + imagenCliente + ".png");
+            }else{
+                iconoCliente = new ImageIcon(directorioImagenes + "\\" + imagenCliente + clienteTipo + ".png");
+            }
             JLabel clienteLabel = new JLabel("Artículos: " + cliente.getNumArticulos(), iconoCliente, JLabel.LEFT);
             clienteLabel.setVerticalTextPosition(JLabel.BOTTOM);
             clienteLabel.setHorizontalTextPosition(JLabel.CENTER);
@@ -104,7 +112,7 @@ public class AnimacionCajas extends JFrame {
         panel.add(panelClientes, BorderLayout.CENTER);
 
         // Establecer el tamaño preferido para que funcione correctamente con JScrollPane
-        panelClientes.setPreferredSize(new Dimension(150, cola.size() * 100)); // Ajusta según el tamaño necesario
+        panelClientes.setPreferredSize(new Dimension(150, cola.size() * 150)); // Ajusta según el tamaño necesario
     }
 
     // Método para simular el procesamiento de la cola

@@ -1,9 +1,12 @@
 package Modelo;
 
+import Vista.AnimacionCajas;
+
 public class Main {
     public static void main(String[] args) {
         String reset = "\u001B[0m";
         String verde = "\u001B[32m";
+        String prueba = "\u001B[32t";
 
         // Caja Experto
         Caja caja1 = new Caja("experto");
@@ -31,7 +34,7 @@ public class Main {
 
         // Caja con el menor tiempo
         int menorTiempo = Math.min(caja1.getTiempoTotal(), Math.min(caja2.getTiempoTotal(), Math.min(caja3.getTiempoTotal(), caja4.getTiempoTotal())));
-        System.out.println(verde + "======== Caja con el menor tiempo =======" + reset);
+        System.out.println(prueba + "\n ======== Caja mas rapida =======" + reset);
         if (menorTiempo == caja1.getTiempoTotal()) {
             System.out.println("Caja #1 (Experto) | " + menorTiempo + " segundos");
         } else if (menorTiempo == caja2.getTiempoTotal()) {
