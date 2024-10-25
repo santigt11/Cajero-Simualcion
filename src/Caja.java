@@ -1,4 +1,4 @@
-package Modelo;
+
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,10 +13,10 @@ public class Caja {
         this.cola = new ArrayList<Cliente>();
         this.tipo = tipo;
         switch (tipo) {
-            case "experto":
+            case "Experto":
                 this.tiempoEscanItem = 5;
                 break;
-            case "principiante":
+            case "Principiante":
                 this.tiempoEscanItem = 10;
                 break;
             default:
@@ -76,5 +76,10 @@ public class Caja {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return "Caja " + tipo;
     }
 }
