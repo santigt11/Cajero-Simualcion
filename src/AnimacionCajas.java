@@ -1,25 +1,25 @@
 
-package Modelo;
-
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.ArrayList;
-import Modelo.Cliente;
-import Modelo.Caja;
 
 public class AnimacionCajas extends JFrame {
 
+    private BackgroundPanel panelPrincipa;
     private JPanel panelPrincipal;
     private JPanel panelCaja1, panelCaja2, panelCaja3, panelCaja4;
     private static Caja caja1, caja2, caja3, caja4;
+    private Thread hilo;
 
     // Directorio de imágenes
     private String directorioImagenes = ".\\imagenes";
 
     public AnimacionCajas() throws HeadlessException {
     }
-    
+
     // Constructor que recibe las cajas
     public AnimacionCajas(Caja caja1, Caja caja2, Caja caja3, Caja caja4) {
         this.caja1 = caja1;
@@ -28,18 +28,18 @@ public class AnimacionCajas extends JFrame {
         this.caja4 = caja4;
 
         setTitle("Supermercado Simulacion");
-        setSize(1000, 600); // Ajusta el tamaño de la ventana según sea necesario
+        setSize(1000, 600); // Tamaño de la ventana
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Crear el panel principal que contendrá todas las cajas
-        panelPrincipal = new JPanel();
+        // Crear el panel principal con la imagen de fondo
+        panelPrincipal = new BackgroundPanel(directorioImagenes + "/background.png");
         panelPrincipal.setLayout(new GridLayout(1, 4, 10, 10)); // 4 columnas para las 4 cajas, con separación
 
         // Inicializar los paneles de cada caja con sus imágenes y nombres
-        panelCaja1 = crearPanelCaja("cajero.png", "Caja Experto");
-        panelCaja2 = crearPanelCaja("cajero.png", "Caja Principiante");
-        panelCaja3 = crearPanelCaja("cajero.png", "Caja Regular");
-        panelCaja4 = crearPanelCaja("cajero.png", "Caja Express");
+        panelCaja1 = crearPanelCaja("cajero.png", caja1.toString());
+        panelCaja2 = crearPanelCaja("cajero.png", caja2.toString());
+        panelCaja3 = crearPanelCaja("cajero.png", caja3.toString());
+        panelCaja4 = crearPanelCaja("cajero.png", caja4.toString());
 
         // Llenar las colas visuales
         llenarColaVisual(panelCaja1, caja1.getCola(), "cliente.png");
@@ -68,10 +68,13 @@ public class AnimacionCajas extends JFrame {
         new Thread(() -> procesarCola(panelCaja4, caja4)).start();
     }
 
-    // Método para crear un panel de caja con su imagen, nombre, y un borde para el carril
+    // Metodo para crear un panel de caja con su imagen, nombre, y un borde para el carril
     private JPanel crearPanelCaja(String imagenCaja, String nombreCaja) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
+
+        // Establecer color de fondo personalizado
+        panel.setBackground(new Color(213, 180, 148));
 
         // Cargar la imagen de la caja
         ImageIcon iconoCaja = new ImageIcon(directorioImagenes + "/" + imagenCaja);
@@ -80,16 +83,29 @@ public class AnimacionCajas extends JFrame {
         labelCaja.setHorizontalTextPosition(JLabel.CENTER);
 
         // Añadir borde para hacer que el carril sea más visible
-        panel.setBorder(new LineBorder(Color.BLACK, 3));
+        // Borde superior de color diferente
+        Border topBorder = new MatteBorder(0, 0, 0, 0, Color.WHITE);
+        // Bordes izquierdo, derecho e inferior
+        Border otherBorders = new MatteBorder(0, 5, 5, 5, Color.BLACK);
+
+        // Combinar los bordes
+        panel.setBorder(new CompoundBorder(topBorder, otherBorders));
 
         panel.add(labelCaja, BorderLayout.NORTH);
         return panel;
     }
 
-    // Método para llenar las colas visuales con los clientes de la lista de la caja
+    // Metodo para llenar las colas visuales con los clientes de la lista de la caja
     private void llenarColaVisual(JPanel panel, ArrayList<Cliente> cola, String imagenCliente) {
         JPanel panelClientes = new JPanel();  // Panel que contendrá los clientes
+
+        // Establecer color de fondo personalizado
+        panelClientes.setBackground(new Color(213, 180, 148));
+
         panelClientes.setLayout(new BoxLayout(panelClientes, BoxLayout.Y_AXIS)); // Distribución vertical para los clientes
+
+        // Añadir un borde vacío al lado izquierdo para desplazar el panelClientes a la derecha
+        panelClientes.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0)); // Ajusta el segundo parámetro para más desplazamiento
 
         for (Cliente cliente : cola) {
             // Cargar la imagen del cliente
@@ -107,7 +123,7 @@ public class AnimacionCajas extends JFrame {
         panelClientes.setPreferredSize(new Dimension(150, cola.size() * 100)); // Ajusta según el tamaño necesario
     }
 
-    // Método para simular el procesamiento de la cola
+    // Metodo para simular el procesamiento de la cola
     private void procesarCola(JPanel panel, Caja caja) {
         Component[] componentes = panel.getComponents();
         JPanel panelClientes = (JPanel) componentes[1]; // Asumimos que el segundo componente es el panel de clientes
@@ -117,12 +133,29 @@ public class AnimacionCajas extends JFrame {
             while (!cola.isEmpty()) {
                 Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
                 int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 1000); // Convertir el tiempo a milisegundos
+                Thread.sleep(tiempoProcesamiento * 1000); // || CONVERTIR TIEMPO A MILISEGUNDOS ||
 
                 if (panelClientes.getComponentCount() > 0) {
-                    panelClientes.remove(0); // Eliminar visualmente el primer cliente
-                    panelClientes.revalidate();
-                    panelClientes.repaint();
+                    Component clienteVisual = panelClientes.getComponent(0); // Obtener el primer cliente visual
+                    ((JLabel) clienteVisual).setText("Gracias!"); // Cambiar el texto a "Gracias!"
+                    hilo = new Thread(() -> {
+                        try {
+                            while (clienteVisual.getY() > -clienteVisual.getHeight()) {
+                                Thread.sleep(60);
+                                clienteVisual.setLocation(clienteVisual.getX(), clienteVisual.getY() - 5);
+                                panelClientes.repaint();
+                            }
+                            SwingUtilities.invokeLater(() -> {
+                                panelClientes.remove(clienteVisual); // Eliminar visualmente el primer cliente
+                                panelClientes.revalidate();
+                                panelClientes.repaint();
+                            });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    hilo.start();
+                    hilo.join(); // Esperar a que el hilo termine antes de procesar el siguiente cliente
                 }
             }
         } catch (InterruptedException e) {

@@ -1,5 +1,4 @@
-package Modelo;
-import java.time.LocalTime;
+
 
 public class Main {
     
@@ -18,25 +17,25 @@ public class Main {
         String verde = "\u001B[32m";
 
         // Caja Experto
-        Caja caja1 = new Caja("experto");
+        Caja caja1 = new Caja("Regular");
         caja1.llenarCola(5, "normal");
         System.out.println(verde + "======== Caja #1 (Experto) =======" + reset);
         System.out.println(caja1.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja1.getTiempoTotal()));
 
         // Caja Novato
-        Caja caja2 = new Caja("principiante");
+        Caja caja2 = new Caja("Principiante");
         caja2.llenarCola(5, "normal");
         System.out.println(verde + "======== Caja #2 (Principiante) =======" + reset);
         System.out.println(caja2.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja2.getTiempoTotal()));
 
         // Caja Regular
-        Caja caja3 = new Caja("regular");
+        Caja caja3 = new Caja("Regular");
         caja3.llenarCola(5, "normal");
         System.out.println(verde + "======== Caja #3 (Regular) =======" + reset);
         System.out.println(caja3.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja3.getTiempoTotal()));
         
         // Caja Express
-        Caja caja4 = new Caja("express");
+        Caja caja4 = new Caja("Express");
         caja4.llenarCola(10, "express");
         System.out.println(verde + "======== Caja Express =======" + reset);
         System.out.println(caja4.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja4.getTiempoTotal()));
