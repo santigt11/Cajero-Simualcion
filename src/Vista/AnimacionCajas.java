@@ -30,7 +30,7 @@ public class AnimacionCajas extends JFrame {
         this.caja3 = caja3;
         this.caja4 = caja4;
 
-        setTitle("Animación de Cajas");
+        setTitle("Supermercado Simulacion");
         setSize(1000, 600); // Ajusta el tamaño de la ventana según sea necesario
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -125,7 +125,7 @@ public class AnimacionCajas extends JFrame {
             while (!cola.isEmpty()) {
                 Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
                 int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 10); // Convertir el tiempo a milisegundos
+                Thread.sleep(tiempoProcesamiento * 1000); // Convertir el tiempo a milisegundos
 
                 if (panelClientes.getComponentCount() > 0) {
                     panelClientes.remove(0); // Eliminar visualmente el primer cliente
