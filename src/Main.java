@@ -17,19 +17,19 @@ public class Main {
         String verde = "\u001B[32m";
 
         // Caja Experto
-        Caja caja1 = new Caja("Regular");
+        Caja caja1 = new Caja("Experto");
         caja1.llenarCola(5, "normal");
         System.out.println(verde + "======== Caja #1 (Experto) =======" + reset);
         System.out.println(caja1.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja1.getTiempoTotal()));
 
         // Caja Novato
-        Caja caja2 = new Caja("Principiante");
+        Caja caja2 = new Caja("Regular");
         caja2.llenarCola(5, "normal");
         System.out.println(verde + "======== Caja #2 (Principiante) =======" + reset);
         System.out.println(caja2.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja2.getTiempoTotal()));
 
         // Caja Regular
-        Caja caja3 = new Caja("Regular");
+        Caja caja3 = new Caja("Principiante");
         caja3.llenarCola(5, "normal");
         System.out.println(verde + "======== Caja #3 (Regular) =======" + reset);
         System.out.println(caja3.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja3.getTiempoTotal()));

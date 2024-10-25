@@ -75,6 +75,9 @@ public class AnimacionCajas extends JFrame {
 
         // Establecer color de fondo personalizado
         panel.setBackground(new Color(213, 180, 148));
+        if (nombreCaja.equals("Caja Express")) {
+            panel.setBackground(new Color(217, 125, 70));
+        }
 
         // Cargar la imagen de la caja
         ImageIcon iconoCaja = new ImageIcon(directorioImagenes + "/" + imagenCaja);
@@ -99,8 +102,10 @@ public class AnimacionCajas extends JFrame {
     private void llenarColaVisual(JPanel panel, ArrayList<Cliente> cola, String imagenCliente) {
         JPanel panelClientes = new JPanel();  // Panel que contendrá los clientes
 
-        // Establecer color de fondo personalizado
         panelClientes.setBackground(new Color(213, 180, 148));
+        if (((JLabel) panel.getComponent(0)).getText().equals("Caja Express")) {
+            panelClientes.setBackground(new Color(213, 163, 122));
+        }
 
         panelClientes.setLayout(new BoxLayout(panelClientes, BoxLayout.Y_AXIS)); // Distribución vertical para los clientes
 
@@ -124,44 +129,57 @@ public class AnimacionCajas extends JFrame {
     }
 
     // Metodo para simular el procesamiento de la cola
-    private void procesarCola(JPanel panel, Caja caja) {
-        Component[] componentes = panel.getComponents();
-        JPanel panelClientes = (JPanel) componentes[1]; // Asumimos que el segundo componente es el panel de clientes
+private void procesarCola(JPanel panel, Caja caja) {
+    Component[] componentes = panel.getComponents();
+    JPanel panelClientes = (JPanel) componentes[1]; // Asumimos que el segundo componente es el panel de clientes
 
-        ArrayList<Cliente> cola = caja.getCola();
-        try {
-            while (!cola.isEmpty()) {
-                Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
-                int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 1000); // || CONVERTIR TIEMPO A MILISEGUNDOS ||
+    ArrayList<Cliente> cola = caja.getCola();
+    try {
+        while (!cola.isEmpty()) {
+            Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
+            int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
+            Thread.sleep(tiempoProcesamiento * 1000); // Convertir tiempo a milisegundos
 
-                if (panelClientes.getComponentCount() > 0) {
-                    Component clienteVisual = panelClientes.getComponent(0); // Obtener el primer cliente visual
-                    ((JLabel) clienteVisual).setText("Gracias!"); // Cambiar el texto a "Gracias!"
-                    hilo = new Thread(() -> {
-                        try {
-                            while (clienteVisual.getY() > -clienteVisual.getHeight()) {
-                                Thread.sleep(60);
-                                clienteVisual.setLocation(clienteVisual.getX(), clienteVisual.getY() - 5);
-                                panelClientes.repaint();
-                            }
-                            SwingUtilities.invokeLater(() -> {
-                                panelClientes.remove(clienteVisual); // Eliminar visualmente el primer cliente
-                                panelClientes.revalidate();
-                                panelClientes.repaint();
-                            });
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    hilo.start();
-                    hilo.join(); // Esperar a que el hilo termine antes de procesar el siguiente cliente
+            if (panelClientes.getComponentCount() > 0) {
+                Component clienteVisual = panelClientes.getComponent(0); // Obtener el primer cliente visual
+                if (clienteVisual instanceof JLabel) {
+                    ((JLabel) clienteVisual).setText("Gracias!"); // Cambiar la etiqueta a "Gracias!"
                 }
+                hilo = new Thread(() -> {
+                    try {
+                        while (clienteVisual.getY() > -clienteVisual.getHeight()) {
+                            Thread.sleep(60);
+                            clienteVisual.setLocation(clienteVisual.getX(), clienteVisual.getY() - 5);
+                            panelClientes.repaint();
+                        }
+                        panelClientes.remove(clienteVisual); // Eliminar visualmente el primer cliente
+                        panelClientes.repaint();
+
+                        // Desplazar el resto de los clientes hacia arriba
+                        for (Component c : panelClientes.getComponents()) {
+                            if (c instanceof JLabel) {
+                                JLabel clienteRestante = (JLabel) c;
+                                int targetY = clienteRestante.getY() - clienteVisual.getHeight();
+                                while (clienteRestante.getY() > targetY) {
+                                    Thread.sleep(49);
+                                    clienteRestante.setLocation(clienteRestante.getX(), clienteRestante.getY() - 15);
+                                    panelClientes.repaint();
+                                }
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+                hilo.start();
+                hilo.join(); // Esperar a que el hilo termine antes de procesar el siguiente cliente
+                panelClientes.repaint();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
+    } catch (InterruptedException e) {
+        e.printStackTrace();
     }
+}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
