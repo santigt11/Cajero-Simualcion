@@ -39,7 +39,6 @@ public class Caja {
 
     public void llenarCola(int clientes, String tipo) {
         getCola().removeAll(cola);
-        Random rand = new Random();
         for (int i = 0; i < clientes; i++) {
             getCola().add(new Cliente(tipo));
         }
