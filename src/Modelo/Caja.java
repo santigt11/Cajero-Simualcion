@@ -1,11 +1,9 @@
 package Modelo;
 
-
-
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Caja {
+
     private ArrayList<Cliente> cola;
     private Integer tiempoEscanItem;
     private Integer tiempoTotal = 0;
@@ -26,8 +24,8 @@ public class Caja {
                 break;
         }
     }
-    
-    public Caja (Integer tiempoEscanItem){
+
+    public Caja(Integer tiempoEscanItem) {
         this.tiempoEscanItem = tiempoEscanItem;
     }
 
@@ -38,7 +36,6 @@ public class Caja {
         return tiempoTotal;
     }
 
-
     public void llenarCola(int clientes, String tipo) {
         getCola().removeAll(cola);
         for (int i = 0; i < clientes; i++) {
@@ -47,8 +44,9 @@ public class Caja {
     }
 
     public ArrayList<Cliente> getCola() {
-        if (cola == null)
+        if (cola == null) {
             cola = new ArrayList<Cliente>();
+        }
         return cola;
     }
 

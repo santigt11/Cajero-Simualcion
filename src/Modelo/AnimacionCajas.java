@@ -33,23 +33,18 @@ public class AnimacionCajas extends JFrame {
         setSize(1000, 600); // Tamaño de la ventana
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Crear el panel principal con la imagen de fondo
         panelPrincipal = new BackgroundPanel(directorioImagenes + "/background.png");
-        panelPrincipal.setLayout(new GridLayout(1, 4, 10, 10)); // 4 columnas para las 4 cajas, con separación
-
-        // Inicializar los paneles de cada caja con sus imágenes y nombres
+        panelPrincipal.setLayout(new GridLayout(1, 4, 10, 10));
         panelCaja1 = crearPanelCaja("cajero.png", caja1.toString());
         panelCaja2 = crearPanelCaja("cajero.png", caja2.toString());
         panelCaja3 = crearPanelCaja("cajero.png", caja3.toString());
         panelCaja4 = crearPanelCaja("cajeroExpress.png", caja4.toString());
 
-        // Llenar las colas visuales
         llenarColaVisual(panelCaja1, caja1.getCola(), "cliente");
         llenarColaVisual(panelCaja2, caja2.getCola(), "cliente");
         llenarColaVisual(panelCaja3, caja3.getCola(), "cliente");
         llenarColaVisual(panelCaja4, caja4.getCola(), "cliente");
 
-        // Añadir los paneles de caja al panel principal
         panelPrincipal.add(panelCaja1);
         panelPrincipal.add(panelCaja2);
         panelPrincipal.add(panelCaja3);
@@ -60,45 +55,39 @@ public class AnimacionCajas extends JFrame {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane);
 
-        // Simular el procesamiento de las colas
         new Thread(() -> procesarCola(panelCaja1, caja1)).start();
         new Thread(() -> procesarCola(panelCaja2, caja2)).start();
         new Thread(() -> procesarCola(panelCaja3, caja3)).start();
         new Thread(() -> procesarCola(panelCaja4, caja4)).start();
     }
 
-    // Metodo para crear un panel de caja con su imagen, nombre, y un borde para el carril
     private JPanel crearPanelCaja(String imagenCaja, String nombreCaja) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        // Establecer color de fondo personalizado
         panel.setBackground(new Color(213, 180, 148));
         if (nombreCaja.equals("Caja Express")) {
             panel.setBackground(new Color(217, 125, 70));
         }
 
-        // Cargar la imagen de la caja
         ImageIcon iconoCaja = new ImageIcon(directorioImagenes + "/" + imagenCaja);
         JLabel labelCaja = new JLabel(nombreCaja, iconoCaja, JLabel.CENTER);
         labelCaja.setVerticalTextPosition(JLabel.BOTTOM);
         labelCaja.setHorizontalTextPosition(JLabel.CENTER);
 
-        // Añadir borde para hacer que el carril sea más visible
-        // Borde superior de color diferente
         Border topBorder = new MatteBorder(0, 0, 0, 0, Color.WHITE);
-        // Bordes izquierdo, derecho e inferior
         Border otherBorders = new MatteBorder(0, 5, 5, 5, Color.BLACK);
-
-        // Combinar los bordes
         panel.setBorder(new CompoundBorder(topBorder, otherBorders));
-
         panel.add(labelCaja, BorderLayout.NORTH);
         return panel;
     }
 
     private void llenarColaVisual(JPanel panel, ArrayList<Cliente> cola, String imagenCliente) {
         JPanel panelClientes = new JPanel();
+        panelClientes.setBackground(new Color(213, 180, 148));
+        if (((JLabel) panel.getComponent(0)).getText().equals("Caja Express")) {
+            panelClientes.setBackground(new Color(213, 163, 122));
+        }
         panelClientes.setLayout(new BoxLayout(panelClientes, BoxLayout.Y_AXIS));
         Random rand = new Random();
         for (Cliente cliente : cola) {
@@ -118,7 +107,6 @@ public class AnimacionCajas extends JFrame {
         panelClientes.setPreferredSize(new Dimension(150, cola.size() * 150)); // Ajusta según el tamaño necesario
     }
 
-    // Metodo para simular el procesamiento de la cola
     private void procesarCola(JPanel panel, Caja caja) {
         Component[] componentes = panel.getComponents();
         JPanel panelClientes = (JPanel) componentes[1]; // Asumimos que el segundo componente es el panel de clientes
@@ -126,26 +114,28 @@ public class AnimacionCajas extends JFrame {
         ArrayList<Cliente> cola = caja.getCola();
         try {
             while (!cola.isEmpty()) {
-                Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
+                Cliente cliente = cola.remove(0);
                 int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 20); // Convertir tiempo a milisegundos
+                Thread.sleep(tiempoProcesamiento * 10); // Convertir tiempo a milisegundos
 
                 if (panelClientes.getComponentCount() > 0) {
-                    Component clienteVisual = panelClientes.getComponent(0); // Obtener el primer cliente visual
+                    Component clienteVisual = panelClientes.getComponent(0);
                     if (clienteVisual instanceof JLabel) {
-                        ((JLabel) clienteVisual).setText("Gracias!"); // Cambiar la etiqueta a "Gracias!"
+                        ((JLabel) clienteVisual).setText("Gracias!");
                     }
-                    hilo = new Thread(() -> {
+
+                    // Crear un hilo independiente para animar la salida del cliente
+                    new Thread(() -> {
                         try {
                             while (clienteVisual.getY() > -clienteVisual.getHeight()) {
                                 Thread.sleep(60);
                                 clienteVisual.setLocation(clienteVisual.getX(), clienteVisual.getY() - 5);
                                 panelClientes.repaint();
                             }
-                            panelClientes.remove(clienteVisual); // Eliminar visualmente el primer cliente
+                            panelClientes.remove(clienteVisual);
                             panelClientes.repaint();
 
-                            // Desplazar el resto de los clientes hacia arriba
+                            // Reajustar la posición de los clientes restantes
                             for (Component c : panelClientes.getComponents()) {
                                 if (c instanceof JLabel) {
                                     JLabel clienteRestante = (JLabel) c;
@@ -160,10 +150,7 @@ public class AnimacionCajas extends JFrame {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    });
-                    hilo.start();
-                    hilo.join(); // Esperar a que el hilo termine antes de procesar el siguiente cliente
-                    panelClientes.repaint();
+                    }).start();
                 }
             }
         } catch (InterruptedException e) {

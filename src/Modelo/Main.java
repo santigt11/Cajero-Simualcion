@@ -19,7 +19,7 @@ public class Main {
         String prueba = "\u001B[32t";
 
         // Caja Experto
-        Caja caja1 = new Caja("experto");
+        Caja caja1 = new Caja("Experto");
         caja1.llenarCola(5, "normal");
         System.out.println(verde + "======== Caja #1 (Experto) =======" + reset);
         System.out.println(caja1.calcularTiempoTotal()+ " segundos" + convertirTiempo(caja1.getTiempoTotal()));
