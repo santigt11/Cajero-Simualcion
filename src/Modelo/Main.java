@@ -1,5 +1,7 @@
 package Modelo;
 
+import Vista.AnimacionCajas;
+
 
 public class Main {
     

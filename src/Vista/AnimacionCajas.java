@@ -1,5 +1,7 @@
-package Modelo;
+package Vista;
 
+import Modelo.Caja;
+import Modelo.Cliente;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -114,28 +116,28 @@ public class AnimacionCajas extends JFrame {
         ArrayList<Cliente> cola = caja.getCola();
         try {
             while (!cola.isEmpty()) {
-                Cliente cliente = cola.remove(0);
+                Cliente cliente = cola.remove(0); // Eliminar el primer cliente (FIFO)
                 int tiempoProcesamiento = (cliente.getNumArticulos() * caja.getTiempoEscanItem()) + cliente.getTiempoPago();
-                Thread.sleep(tiempoProcesamiento * 10); // Convertir tiempo a milisegundos
+                Thread.sleep(tiempoProcesamiento * 50); // Convertir tiempo a milisegundos
 
                 if (panelClientes.getComponentCount() > 0) {
-                    Component clienteVisual = panelClientes.getComponent(0);
+                    Component clienteVisual = panelClientes.getComponent(0); // Obtener el primer cliente visual
                     if (clienteVisual instanceof JLabel) {
-                        ((JLabel) clienteVisual).setText("Gracias!");
+                        ((JLabel) clienteVisual).setText("Gracias!"); // Cambiar la etiqueta a "Gracias!"
                     }
 
-                    // Crear un hilo independiente para animar la salida del cliente
-                    new Thread(() -> {
+                    // Nueva instancia del hilo para cada cliente visual
+                    Thread animacionHilo = new Thread(() -> {
                         try {
                             while (clienteVisual.getY() > -clienteVisual.getHeight()) {
                                 Thread.sleep(60);
                                 clienteVisual.setLocation(clienteVisual.getX(), clienteVisual.getY() - 5);
                                 panelClientes.repaint();
                             }
-                            panelClientes.remove(clienteVisual);
+                            panelClientes.remove(clienteVisual); // Eliminar visualmente el primer cliente
                             panelClientes.repaint();
 
-                            // Reajustar la posición de los clientes restantes
+                            // Desplazar el resto de los clientes hacia arriba
                             for (Component c : panelClientes.getComponents()) {
                                 if (c instanceof JLabel) {
                                     JLabel clienteRestante = (JLabel) c;
@@ -150,7 +152,10 @@ public class AnimacionCajas extends JFrame {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }).start();
+                    });
+
+                    // Iniciar la animación para el cliente actual
+                    animacionHilo.start();
                 }
             }
         } catch (InterruptedException e) {
